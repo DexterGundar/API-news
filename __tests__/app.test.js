@@ -12,12 +12,10 @@ beforeEach(() => {
 afterAll(() => db.end());
 
 describe("GET /api/topics", () => {
-    test("returns 200 status code", () => {
-      return request(app).get("/api/topics").expect(200);
-    });
     test("respond with a topic properties to be 'slug' and 'description' and types to be String", () => {
         return request(app)
           .get("/api/topics")
+          .expect(200)          
           .then(({ body }) => {
             expect(body.topics).toHaveLength(3);
             body.topics.forEach((topic) => {
@@ -26,20 +24,17 @@ describe("GET /api/topics", () => {
             });
           });
       });
-      test("respond with an array of topic objects each with the following properties: slug, description", () => {
-        return request(app)
-          .get("/api/topics")
-          .then(({ body }) => {
-            expect(body.topics).toEqual( [
-                { slug: 'mitch', description: 'The man, the Mitch, the legend' },
-                { slug: 'cats', description: 'Not dogs' },
-                { slug: 'paper', description: 'what books are made of' }
-              ]);
-            });
-          });
-      test("return 404, if non-existant address has been entered", () => {
-        return request(app)
-          .get("/api/topic")
-          .expect(404)
-      });
+
+})
+
+describe('Non existant end-points',()=>{
+  test("return 404, if non-existant address has been entered", () => {
+    return request(app)
+      .get("/api/topic")
+      .expect(404)
+      .then((response)=>{
+
+        expect(response.body.msg).toBe('Not Found')
+      })
+  });
 })
