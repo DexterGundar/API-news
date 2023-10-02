@@ -24,9 +24,7 @@ describe("GET /api/topics", () => {
             });
           });
       });
-
 })
-
 describe('Non existant end-points',()=>{
   test("return 404, if non-existant address has been entered", () => {
     return request(app)
