@@ -1,17 +1,27 @@
-const { fetchTopics } = require("../models/app.models.js")
+const { fetchTopics, fetchArticleById } = require("../models/app.models.js")
 const endPoints = require("../endpoints.json");
 
+exports.getAllApis = (req, res) =>{
+        res.status(200).send({ 'endpoints': endPoints})
+}
 exports.getTopics = (req, res, next) => {
 
     fetchTopics()
     .then((topics)=>{
         res.status(200).send({ topics })
     })
-    .catch((err)=>{
-        next(err)
-    })
+    .catch(next)
 }
 
-exports.getAllApis = (req, res) =>{
-        res.status(200).send({ 'endpoints': endPoints})
+exports.getArticleById = (req, res, next) => {
+    const {article_id} = req.params
+    if (isNaN(article_id)) return next({ status: 400, message: 'Not a number, please enter valid id'});
+
+    fetchArticleById(article_id)
+    .then((article)=>{
+        res.status(200).send({ article })
+    })
+    .catch((err)=>{
+        next(err);
+    })
 }
