@@ -37,7 +37,6 @@ describe('Non existant end-points',()=>{
   });
 })
 
-
 describe("GET /api/articles/:article_id", () => {
   test("respond with 200 and an article by it's id", () => {
       return request(app)

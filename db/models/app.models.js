@@ -6,6 +6,7 @@ exports.fetchTopics = () => {
     })
 }
 
+
 exports.fetchArticleById = (id) =>{
     return db.query(`
     SELECT * FROM articles

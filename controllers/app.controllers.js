@@ -12,6 +12,7 @@ exports.getTopics = (req, res, next) => {
     })
 }
 
+
 exports.getAllApis = (req, res) =>{
         res.status(200).send({ 'endpoints': endPoints})
 }
