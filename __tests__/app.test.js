@@ -37,6 +37,44 @@ describe('Non existant end-points',()=>{
   });
 })
 
+
+describe("GET /api/articles/:article_id", () => {
+  test("respond with 200 and an article by it's id", () => {
+      return request(app)
+        .get("/api/articles/5")
+        .expect(200)          
+        .then(({ body }) => {
+          expect(body.article[0].author).toBe("rogersop"),
+          expect(body.article[0].title).toBe("UNCOVERED: catspiracy to bring down democracy"),
+          expect(body.article[0].article_id).toBe(5),
+            expect(body.article[0].body).toBe("Bastet walks amongst us, and the cats are taking arms!"),
+            expect(body.article[0].topic).toBe("cats"),
+            expect(body.article[0].created_at).toBe('2020-08-03T13:14:00.000Z'),
+            expect(body.article[0].votes).toBe(0),
+            expect(body.article[0].article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700");
+        });
+    });
+    test("respond with 404 and a helpful message if there is no such id", () => {
+      return request(app)
+        .get("/api/articles/5555")
+        .expect(404)          
+        .then(({ body }) => {
+        expect(body.message).toBe('Not Found')
+        })
+    });
+    test("respond with 400 and a helpful message if the id is incorrectly entered", () => {
+      return request(app)
+        .get("/api/articles/55abc")
+        .expect(400)          
+        .then(({ body }) => {
+        expect(body.message).toBe('Not a number, please enter valid id')
+        })
+    });
+
+})
+
+
+
 describe('get api',()=>{
   test("return 200 and api endpoints", () => {
     return request(app)
