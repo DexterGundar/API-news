@@ -1,4 +1,3 @@
-
 const db = require("../connection.js");
 
 exports.fetchTopics = () => {
@@ -8,16 +7,16 @@ exports.fetchTopics = () => {
 }
 
 exports.fetchArticleById = (id) =>{
-    console.log(id)
     return db.query(`
     SELECT * FROM articles
 
     WHERE article_id=$1;  
     `,[id])
     .then(({ rows })=>{
-        // console.log(rows[0])
+        if (rows.length === 0){
+            return Promise.reject({ status: 404, message: 'Not Found'})
+        } else {
         return rows
+        }
     })
 }
-// JOIN comments
-// ON comments.article_id = articles.article_id
