@@ -4,6 +4,7 @@ const request = require("supertest");
 const db = require("../db/connection.js");
 const seed = require("../db/seeds/seed.js");
 const testData = require("../db/data/test-data");
+const endPoints = require("../endpoints.json");
 
 beforeEach(() => {
   return seed(testData);
@@ -31,8 +32,18 @@ describe('Non existant end-points',()=>{
       .get("/api/topic")
       .expect(404)
       .then((response)=>{
-
         expect(response.body.msg).toBe('Not Found')
+      })
+  });
+})
+
+describe('get api',()=>{
+  test("return 200 and api endpoints", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({body})=>{
+        expect(body).toEqual(endPoints)
       })
   });
 })
