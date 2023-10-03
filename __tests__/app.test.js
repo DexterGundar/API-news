@@ -43,7 +43,8 @@ describe('get api',()=>{
       .get("/api")
       .expect(200)
       .then(({body})=>{
-        expect(body).toEqual(endPoints)
+        console.log(body)
+        expect(body).toEqual({'endpoints': endPoints})
       })
   });
 })
