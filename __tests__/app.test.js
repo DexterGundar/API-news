@@ -72,9 +72,6 @@ describe("GET /api/articles/:article_id", () => {
     });
 
 })
-
-
-
 describe('get api',()=>{
   test("return 200 and api endpoints", () => {
     return request(app)
@@ -85,3 +82,33 @@ describe('get api',()=>{
       })
   });
 })
+describe('GET /api/articles/:article_id/comments',()=>{
+  xtest("return 200 and comments by article's id", () => {
+    return request(app)
+      .get("/api/articles/5/comments")
+      .expect(200)
+      // .then(({body})=>{
+      //   expect(body.article[0].comment_id).toBe(5),
+      //   expect(body.article[0].votes).toBe(5),
+      //   expect(body.article[0].created_at).toBe(5),
+      //   expect(body.article[0].author).toBe(5),
+      //   expect(body.article[0].body).toBe(5),
+      //   expect(body.article[0].article_id).toBe(5)
+      // })
+  });
+})
+
+// {
+//   body: "What do you see? I have no idea where this will lead us. This place I speak of, is known as the Black Lodge.",
+//   votes: 16,
+//   author: "icellusedkars",
+//   article_id: 5,
+//   created_at: 1591682400000,
+// },
+// {
+//   body: "I am 100% sure that we're not completely sure.",
+//   votes: 1,
+//   author: "butter_bridge",
+//   article_id: 5,
+//   created_at: 1606176480000,
+// },
