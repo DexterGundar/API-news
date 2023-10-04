@@ -116,3 +116,91 @@ describe('get articles',()=>{
   });
 
 })
+
+describe('POST /api/articles/:article_id/comments',()=>{
+  test("return 201 and newly posted comment", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: 'this is my sensible and nice comment'
+    }
+    return request(app)
+      .post("/api/articles/6/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({body})=>{
+        expect(body.comment.comment_id).toBe(19),
+        expect(body.comment.body).toBe('this is my sensible and nice comment'),
+        expect(body.comment.article_id).toBe(6),
+        expect(body.comment.author).toBe('icellusedkars'),
+        expect(body.comment.votes).toBe(0),
+        expect(typeof body.comment.created_at).toEqual('number')
+      })
+  });
+  test("return 404 and useful message if username is wrongly entered", () => {
+    const newComment = {
+      username: "icellusedkar",
+      body: 'this is my sensible and nice comment'
+    }
+    return request(app)
+      .post("/api/articles/6/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({body})=>{
+        expect(body.message).toBe("This user does not exist")
+      })
+  });
+  test("return 400 and useful message if article ID is invalid", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: 'this is my sensible and nice comment'
+    }
+    return request(app)
+      .post("/api/articles/55asd/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({body})=>{
+        expect(body.message).toBe('Not a number, please enter valid id')
+      })
+  });
+  test("return 400 and invalid data send message if no username has been sent", () => {
+    const newComment = {
+      body: 'this is my sensible and nice comment'
+    }
+    const newCommentTwo = {
+      username: "icellusedkars",
+    }
+    return request(app)
+      .post("/api/articles/6/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({body})=>{
+        expect(body.message).toBe('Invalid data sent')
+      })
+  });
+  test("return 400 and invalid data send message if no body has been sent", () => {
+    const newComment = {
+      username: "icellusedkars",
+    }
+    return request(app)
+      .post("/api/articles/6/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({body})=>{
+        expect(body.message).toBe('Invalid data sent')
+      })
+  });
+  test("return 404 and useful message if there is no such article", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: 'this is my sensible and nice comment'
+    }
+    return request(app)
+      .post("/api/articles/5555/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({body})=>{
+        // console.log(body, 'in test<<<<<')
+        expect(body.message).toBe('Not Found')
+      })
+  });
+})

@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
-
-const { getTopics, getArticleById, getAllApis, getArticles } = require("./controllers/app.controllers.js");
+app.use(express.json())
+const { getTopics, getArticleById, getAllApis, getArticles, postComment } = require("./controllers/app.controllers.js");
 
 app.get("/api/topics", getTopics);
 
@@ -11,9 +11,7 @@ app.get("/api/articles",getArticles)
 
 app.get("/api", getAllApis)
 
-app.all("/*",(req,res)=>{
-  res.status(404).send({msg: 'Not Found'})
-})
+app.post("/api/articles/:article_id/comments",postComment)
 
 app.use((err, req, res, next)=>{
   if (err.status){
@@ -27,5 +25,10 @@ app.use((err, req, res, next) => {
         res.status(500).send({ msg: "internal server error!" })
   })
 
+
+
+app.all("/*",(req,res)=>{
+  res.status(404).send({msg: 'Not Found'})
+})
 
 module.exports = app;

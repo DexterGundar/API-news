@@ -38,3 +38,50 @@ exports.fetchArticles = () =>{
         return rows
     })
 }
+
+exports.insertComment = (article_id, newComment) =>{
+    if (Object.keys(newComment).length < 2 ||
+        !newComment.username ||
+        !newComment.body ||
+        article_id <= 0) {
+        return Promise.reject({ status: 400, message: "Invalid data sent" });
+      }
+    
+    const { username, body, votes = 0 } = newComment
+   const userStr = `
+        SELECT * FROM users
+        WHERE username = $1;
+    `;
+  return db
+    .query(userStr, [username])
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, message: "This user does not exist",});
+      } else {
+        return rows[0];
+      }
+    })
+    .then((user) => {
+      const created_at = new Date();
+      const commentStr = `
+            INSERT INTO comments
+                (article_id, author, body, votes, created_at)
+            VALUES
+                ($1, $2, $3, $4, $5)
+            RETURNING *;
+        `;
+      return db
+        .query(commentStr, [
+          article_id,
+          user.username,
+          body,
+          votes,
+          created_at,
+        ])
+        .then(({ rows: [comment] }) => {
+          comment.created_at = Date.parse(comment.created_at);
+          return comment;
+        });
+    });
+}
+

@@ -1,4 +1,4 @@
-const { fetchTopics, fetchArticleById, fetchArticles } = require("../models/app.models.js")
+const { fetchTopics, fetchArticleById, fetchArticles, insertComment } = require("../models/app.models.js")
 const endPoints = require("../endpoints.json");
 
 exports.getAllApis = (req, res) =>{
@@ -35,3 +35,27 @@ exports.getArticleById = (req, res, next) => {
         next(err);
     })
 }
+
+exports.postComment = (req, res, next) =>{
+    const {article_id} = req.params
+    const newComment = req.body
+    // console.log(article_id, newComment)
+    // insertComment(article_id, newComment)
+    // .then((comment)=>{   
+    //     res.status(201).send({ comment })
+    // })
+    // .catch((err)=>{
+    //     next(err)
+    // })
+    return Promise.all([fetchArticleById(article_id).catch((error)=> error), insertComment(article_id, newComment).catch((error)=> error)])
+    .then((values)=>{
+            console.log(values)
+        
+        res.status(201).send({ comment })
+    })
+    .catch((err)=>{
+        next(err)
+    })
+}
+
+
