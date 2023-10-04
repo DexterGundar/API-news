@@ -39,3 +39,41 @@ exports.fetchArticles = () =>{
     })
 }
 
+exports.fetchCommentsByArtId = (article_id)=>{
+    const articleString = `
+    SELECT * FROM articles
+    WHERE article_id = $1;
+`;
+return db
+.query(articleString, [article_id])
+.then(({ rows }) => {
+  if (rows.length === 0) {
+    return Promise.reject({
+      status: 404,
+      message: "This article does not exist",
+    });
+  } else {
+    return rows[0];
+  }
+})
+.then((article) => {
+  const commentsFromDb = `
+        SELECT * FROM comments
+        WHERE article_id = $1
+        ORDER BY created_at DESC;
+    `;
+  return db
+    .query(commentsFromDb, [article.article_id])
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return [
+          {
+            message: "There are no comments associated with this article"
+          },
+        ];
+      } else {
+        return rows;
+      }
+    });
+});
+}

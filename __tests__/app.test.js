@@ -116,33 +116,57 @@ describe('get articles',()=>{
 
 })
 
-// describe('GET /api/articles/:article_id/comments',()=>{
-//   test("return 200 and comments by article's id", () => {
-//     return request(app)
-//       .get("/api/articles/5/comments")
-//       .expect(200)
-      // .then(({body})=>{
-      //   expect(body.article[0].comment_id).toBe(5),
-      //   expect(body.article[0].votes).toBe(5),
-      //   expect(body.article[0].created_at).toBe(5),
-      //   expect(body.article[0].author).toBe(5),
-      //   expect(body.article[0].body).toBe(5),
-      //   expect(body.article[0].article_id).toBe(5)
-      // })
-//   });
-// })
-
-// {
-//   body: "What do you see? I have no idea where this will lead us. This place I speak of, is known as the Black Lodge.",
-//   votes: 16,
-//   author: "icellusedkars",
-//   article_id: 5,
-//   created_at: 1591682400000,
-// },
-// {
-//   body: "I am 100% sure that we're not completely sure.",
-//   votes: 1,
-//   author: "butter_bridge",
-//   article_id: 5,
-//   created_at: 1606176480000,
-// },
+describe('GET /api/articles/:article_id/comments',()=>{
+  test("return 200 and comments by article's id", () => {
+    return request(app)
+      .get("/api/articles/5/comments")
+      .expect(200)
+      .then(({body})=>{
+        expect(body.comments).toHaveLength(2);
+            body.comments.forEach((comment) => {
+              expect(comment).toHaveProperty("comment_id", expect.any(Number)),
+              expect(comment).toHaveProperty("body", expect.any(String)),
+              expect(comment).toHaveProperty("votes", expect.any(Number)),
+              expect(comment).toHaveProperty("author", expect.any(String)),
+              expect(comment).toHaveProperty("created_at", expect.any(String)),
+              expect(comment).toHaveProperty("article_id", expect.any(Number))
+            })
+      })
+  });
+  test("return 400 and message of incorrectly entered ID", () => {
+    return request(app)
+        .get("/api/articles/55abc/comments")
+        .expect(400)          
+        .then(({ body }) => {
+        expect(body.message).toBe('Not a number, please enter valid id')
+        })
+  });
+  test('return 200 and array of objects which is by default sorted by "created_at" in a DESC order', () => {
+    return request(app)
+      .get("/api/articles/5/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+  test("return 200 and message that there are no comments associated with this article", () => {
+    return request(app)
+        .get("/api/articles/4/comments")
+        .expect(200)          
+        .then(({ body }) => {
+        expect(body.comments).toEqual([
+          {
+            message: 'There are no comments associated with this article'
+          }
+        ])
+        })
+  })
+  test("return 404 and message that an article does not exist if article ID is not in db", () => {
+    return request(app)
+        .get("/api/articles/5555/comments")
+        .expect(404)          
+        .then(({ body }) => {
+        expect(body.message).toBe('This article does not exist')
+        })
+  });
+})
