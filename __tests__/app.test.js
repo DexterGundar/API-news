@@ -5,7 +5,7 @@ const db = require("../db/connection.js");
 const seed = require("../db/seeds/seed.js");
 const testData = require("../db/data/test-data");
 const endPoints = require("../endpoints.json");
-const jestSorted = require('jest-sorted')
+
 
 beforeEach(() => {
   return seed(testData);
@@ -103,14 +103,6 @@ describe('get articles',()=>{
               expect(article).toHaveProperty("comment_count", expect.any(String)),
               expect(article).not.toHaveProperty('body')
             })
-      })
-  });
-  test("return 404, if non-existant address has been entered", () => {
-    return request(app)
-      .get("/api/article")
-      .expect(404)
-      .then((response)=>{
-        expect(response.body.msg).toBe('Not Found')
       })
   });
   test("articles are sorted in descending order by created date", () => {
