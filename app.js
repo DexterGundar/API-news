@@ -7,7 +7,7 @@ app.get("/api/topics", getTopics);
 
 app.get("/api/articles/:article_id", getArticleById);
 
-app.get("/api/articles/:article_id/comments", getCommentsByArtId);
+// app.get("/api/articles/:article_id/comments", getCommentsByArtId);
 
 app.get("/api", getAllApis)
 

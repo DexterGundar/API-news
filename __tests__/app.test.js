@@ -82,11 +82,11 @@ describe('get api',()=>{
       })
   });
 })
-describe('GET /api/articles/:article_id/comments',()=>{
-  xtest("return 200 and comments by article's id", () => {
-    return request(app)
-      .get("/api/articles/5/comments")
-      .expect(200)
+// describe('GET /api/articles/:article_id/comments',()=>{
+//   test("return 200 and comments by article's id", () => {
+//     return request(app)
+//       .get("/api/articles/5/comments")
+//       .expect(200)
       // .then(({body})=>{
       //   expect(body.article[0].comment_id).toBe(5),
       //   expect(body.article[0].votes).toBe(5),
@@ -95,8 +95,8 @@ describe('GET /api/articles/:article_id/comments',()=>{
       //   expect(body.article[0].body).toBe(5),
       //   expect(body.article[0].article_id).toBe(5)
       // })
-  });
-})
+//   });
+// })
 
 // {
 //   body: "What do you see? I have no idea where this will lead us. This place I speak of, is known as the Black Lodge.",
