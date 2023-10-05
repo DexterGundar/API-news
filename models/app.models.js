@@ -90,6 +90,8 @@ exports.insertComment = (article_id, newComment) =>{
 }
 
 exports.updateArticleVotes = (article_id, inc_votes) => {
+  if (isNaN(inc_votes)) return Promise.reject({ status: 400, message: 'Voting must contain only numbers'});
+
   return db.query(`
   UPDATE articles
   SET votes = votes +$1
