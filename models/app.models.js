@@ -7,6 +7,7 @@ exports.fetchTopics = () => {
 }
 
 exports.fetchArticleById = (article_id) =>{
+
   if (isNaN(article_id)) return Promise.reject({ status: 400, message: 'Not a number, please enter valid id'});
 
     return db.query(`
@@ -16,7 +17,7 @@ exports.fetchArticleById = (article_id) =>{
     `,[article_id])
     .then(({ rows })=>{
         if (rows.length === 0){
-            return Promise.reject({ status: 404, message: 'Not Found'})
+          return Promise.reject({ status: 404, message: 'Not Found'})
         } else {
         return rows
         }
@@ -40,6 +41,7 @@ exports.fetchArticles = () =>{
         return rows
     })
 }
+
 
 exports.insertComment = (article_id, newComment) =>{
   
@@ -100,4 +102,22 @@ exports.updateArticleVotes = (article_id, inc_votes) => {
   `, [inc_votes, article_id]).then(({rows}) =>{
     return rows[0]
   })
+
+exports.fetchCommentsByArtId = (article_id)=>{
+
+  const commentsFromDb = `
+        SELECT * FROM comments
+        WHERE article_id = $1
+        ORDER BY created_at DESC;
+    `;
+  return db
+    .query(commentsFromDb, [article_id])
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return [];
+      } else {
+        return rows;
+      }
+    });
+
 }
