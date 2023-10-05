@@ -67,7 +67,7 @@ describe("GET /api/articles/:article_id", () => {
         .get("/api/articles/55abc")
         .expect(400)          
         .then(({ body }) => {
-        expect(body.message).toBe('Not a number, please enter valid id')
+        expect(body.message).toBe('Bad Request')
         })
     });
 
