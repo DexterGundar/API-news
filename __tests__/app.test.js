@@ -136,6 +136,25 @@ describe('POST /api/articles/:article_id/comments',()=>{
         expect(typeof body.comment.created_at).toEqual('number')
       })
   });
+  test("return 201 and newly posted comment, ignores unnecessary properties", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: 'this is my sensible and nice comment',
+      user: 'archie'
+    }
+    return request(app)
+      .post("/api/articles/6/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({body})=>{
+        expect(body.comment.comment_id).toBe(19),
+        expect(body.comment.body).toBe('this is my sensible and nice comment'),
+        expect(body.comment.article_id).toBe(6),
+        expect(body.comment.author).toBe('icellusedkars'),
+        expect(body.comment.votes).toBe(0),
+        expect(typeof body.comment.created_at).toEqual('number')
+      })
+  });
   test("return 404 and useful message if username is wrongly entered", () => {
     const newComment = {
       username: "icellusedkar",
@@ -227,6 +246,30 @@ describe('PATCH /api/articles/:article_id',()=>{
         })
       })
   });
+
+  test("return 201 and updated article, ignoring unnecessary properties entered", () => {
+    const newVotes = {
+      inc_votes: 7,
+      topic: "mitch"
+    }
+    return request(app)
+      .patch("/api/articles/3")
+      .send(newVotes)
+      .expect(201)
+      .then(({body})=>{
+        expect(body.article).toMatchObject({
+          article_id: 3,
+          title: "Eight pug gifs that remind me of mitch",
+          topic: "mitch",
+          author: "icellusedkars",
+          body: "some gifs",
+          created_at: "2020-11-03T09:12:00.000Z",
+          votes: 7,
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        })
+      })
+  });
   
   test("return 404 status code and message if article id doesn't exist", () => {
     const newVotes = {
@@ -247,7 +290,7 @@ test('return 400 and message if article ID is invalid', () => {
   .patch("/api/articles/55asdsa")
   .send(newVotes).expect(400)
   .then(({body}) => {
-      expect(body.message).toBe('Bad Request');
+      expect(body.message).toBe("Not a number, please enter valid id");
   })
   });
 

@@ -40,14 +40,7 @@ exports.postComment = (req, res, next) =>{
     const {article_id} = req.params
     const newComment = req.body
 
-    if (Object.keys(newComment).length < 2 ||
-    !newComment.username ||
-    !newComment.body ||
-    article_id < 1) {
-    return res.status(400).send({ message: "Invalid data sent" });
-  }
-
-    if (isNaN(article_id)) return next({ status: 400, message: 'Not a number, please enter valid id'});
+     
     fetchArticleById(article_id).then(()=>{
         insertComment(article_id, newComment).then((comment)=>{
         res.status(201).send({ comment });

@@ -6,12 +6,14 @@ exports.fetchTopics = () => {
     })
 }
 
-exports.fetchArticleById = (id) =>{
+exports.fetchArticleById = (article_id) =>{
+  if (isNaN(article_id)) return Promise.reject({ status: 400, message: 'Not a number, please enter valid id'});
+
     return db.query(`
     SELECT * FROM articles
 
     WHERE article_id=$1;  
-    `,[id])
+    `,[article_id])
     .then(({ rows })=>{
         if (rows.length === 0){
             return Promise.reject({ status: 404, message: 'Not Found'})
@@ -40,8 +42,16 @@ exports.fetchArticles = () =>{
 }
 
 exports.insertComment = (article_id, newComment) =>{
-     
+  
     const { username, body, votes = 0 } = newComment
+
+    if (Object.keys(newComment).length < 2 ||
+    !newComment.username ||
+    !newComment.body ||
+    article_id < 1) {
+    return Promise.reject({status: 400, message: "Invalid data sent" });
+  }
+    
    const userStr = `
         SELECT * FROM users
         WHERE username = $1;
