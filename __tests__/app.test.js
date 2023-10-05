@@ -129,10 +129,30 @@ describe('GET /api/articles/:article_id/comments',()=>{
               expect(comment).toHaveProperty("votes", expect.any(Number)),
               expect(comment).toHaveProperty("author", expect.any(String)),
               expect(comment).toHaveProperty("created_at", expect.any(String)),
-              expect(comment).toHaveProperty("article_id", expect.any(Number))
+              expect(comment.article_id).toBe(5)
             })
       })
   });
+  test('return 200 and array of objects which is by default sorted by "created_at" in a DESC order', () => {
+    return request(app)
+    .get("/api/articles/5/comments")
+    .expect(200)
+    .then(({ body }) => {
+      expect(body.comments).toBeSortedBy("created_at", { descending: true });
+    });
+  });
+  test("return 200 and message that there are no comments associated with this article", () => {
+    return request(app)
+    .get("/api/articles/4/comments")
+    .expect(200)          
+    .then(({ body }) => {
+      expect(body.comments).toEqual([
+        {
+          message: 'There are no comments associated with this article'
+        }
+      ])
+    })
+  })
   test("return 400 and message of incorrectly entered ID", () => {
     return request(app)
         .get("/api/articles/55abc/comments")
@@ -141,32 +161,12 @@ describe('GET /api/articles/:article_id/comments',()=>{
         expect(body.message).toBe('Not a number, please enter valid id')
         })
   });
-  test('return 200 and array of objects which is by default sorted by "created_at" in a DESC order', () => {
-    return request(app)
-      .get("/api/articles/5/comments")
-      .expect(200)
-      .then(({ body }) => {
-        expect(body.comments).toBeSortedBy("created_at", { descending: true });
-      });
-  });
-  test("return 200 and message that there are no comments associated with this article", () => {
-    return request(app)
-        .get("/api/articles/4/comments")
-        .expect(200)          
-        .then(({ body }) => {
-        expect(body.comments).toEqual([
-          {
-            message: 'There are no comments associated with this article'
-          }
-        ])
-        })
-  })
   test("return 404 and message that an article does not exist if article ID is not in db", () => {
     return request(app)
         .get("/api/articles/5555/comments")
         .expect(404)          
         .then(({ body }) => {
-        expect(body.message).toBe('This article does not exist')
+        expect(body.message).toBe('Not Found')
         })
   });
 })
