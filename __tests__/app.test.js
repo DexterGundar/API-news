@@ -368,3 +368,23 @@ describe('GET /api/articles/:article_id/comments',()=>{
   });
 
 })
+describe('DELETE /api/comments/:comment_id',()=>{
+  test("Delete comment by comment ID", () => {
+    return request(app)
+      .delete("/api/comments/3")
+      .expect(204)
+      .then(({ body }) => {
+        const condition = body.comment_id !== 3;
+        expect(condition).toBe(true);
+      })
+  });
+  test("Return 404 and message that an article is not found if comment ID is not in db", () => {
+    return request(app)
+      .delete("/api/comments/22222")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe('Not Found')
+      })
+  });
+
+})
