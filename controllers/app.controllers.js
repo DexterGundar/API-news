@@ -1,4 +1,4 @@
-const { fetchTopics, fetchArticleById, fetchArticles, insertComment } = require("../models/app.models.js")
+const { fetchTopics, fetchArticleById, fetchArticles, insertComment, updateArticleVotes } = require("../models/app.models.js")
 const endPoints = require("../endpoints.json");
 
 exports.getAllApis = (req, res) =>{
@@ -61,4 +61,17 @@ exports.postComment = (req, res, next) =>{
 })
 }
 
+exports.patchArticleVotes = (req, res, next) => {
+    const {article_id} = req.params
+    const {inc_votes} = req.body
 
+    if (isNaN(inc_votes)) return next({ status: 400, message: 'Voting must contain only numbers'});
+    fetchArticleById(article_id).then(()=>{
+        updateArticleVotes(article_id, inc_votes).then((article) =>{
+            res.status(201).send({article})
+        })
+    })
+    .catch((err) =>{
+        next(err)
+    })
+}
