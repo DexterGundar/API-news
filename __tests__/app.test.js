@@ -392,3 +392,24 @@ describe('DELETE /api/comments/:comment_id',()=>{
   });
 
 })
+
+describe('GET /api/articles (topic query)',()=>{
+  test("return articles by topic query cats", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then(({body})=>{
+        expect(body.articles).toHaveLength(1);
+        expect(body.articles[0].article_id).toBe(5);
+        expect(body.articles[0].author).toBe("rogersop");
+        expect(body.articles[0].topic).toBe("cats");
+        expect(body.articles[0].title).toBe("UNCOVERED: catspiracy to bring down democracy");
+        expect(body.articles[0].article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700");
+      })
+  });
+  test("return articles by topic query paper", () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(200)
+  })
+})

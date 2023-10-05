@@ -25,19 +25,35 @@ exports.fetchArticleById = (article_id) =>{
     })
 }
 
-exports.fetchArticles = () =>{
+exports.fetchArticles = (topic) =>{
 
-    return db.query(`
+const topicObj = {
+  mitch: "mitch",
+  cats: "cats",
+  paper: "paper"
+}
+    let query = `
     SELECT 
     articles.author, articles.title, articles.article_id, articles.topic, 
-    articles.created_at, articles.votes, articles.article_img_url, 
+    articles.created_at, articles.votes, articles.article_img_url,
     COUNT(comments.comment_id) AS comment_count
     FROM articles
     LEFT JOIN comments
     ON articles.article_id = comments.article_id
+    `
+    const values = [];
+    if (topic in topicObj){
+      query += `WHERE topic = $1`
+      values.push(topic)
+    } else if (topic !== undefined && !(topic in topicObj)){
+      return Promise.reject({ status: 400, message: "invalid query" })
+    }
+    query += `
     GROUP BY articles.article_id
     ORDER BY articles.created_at DESC;
-    `)
+    `;
+
+    return db.query(query,values)
     .then(({rows})=>{
         return rows
     })
