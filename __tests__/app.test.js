@@ -32,7 +32,7 @@ describe('Non existant end-points',()=>{
       .get("/api/topic")
       .expect(404)
       .then((response)=>{
-        expect(response.body.msg).toBe('Not Found')
+        expect(response.body.message).toBe('Not Found')
       })
   });
 })
@@ -146,11 +146,7 @@ describe('GET /api/articles/:article_id/comments',()=>{
     .get("/api/articles/4/comments")
     .expect(200)          
     .then(({ body }) => {
-      expect(body.comments).toEqual([
-        {
-          message: 'There are no comments associated with this article'
-        }
-      ])
+      expect(body.comments).toEqual([])
     })
   })
   test("return 400 and message of incorrectly entered ID", () => {
@@ -158,7 +154,7 @@ describe('GET /api/articles/:article_id/comments',()=>{
         .get("/api/articles/55abc/comments")
         .expect(400)          
         .then(({ body }) => {
-        expect(body.message).toBe('Not a number, please enter valid id')
+        expect(body.message).toBe('Bad Request')
         })
   });
   test("return 404 and message that an article does not exist if article ID is not in db", () => {

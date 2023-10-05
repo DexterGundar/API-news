@@ -6,15 +6,16 @@ exports.fetchTopics = () => {
     })
 }
 
-exports.fetchArticleById = (id) =>{
+exports.fetchArticleById = (article_id) =>{
+  
     return db.query(`
     SELECT * FROM articles
 
     WHERE article_id=$1;  
-    `,[id])
+    `,[article_id])
     .then(({ rows })=>{
         if (rows.length === 0){
-            return Promise.reject({ status: 404, message: 'Not Found'})
+          return Promise.reject({ status: 404, message: 'Not Found'})
         } else {
         return rows
         }
@@ -40,40 +41,19 @@ exports.fetchArticles = () =>{
 }
 
 exports.fetchCommentsByArtId = (article_id)=>{
-    const articleString = `
-    SELECT * FROM articles
-    WHERE article_id = $1;
-`;
-return db
-.query(articleString, [article_id])
-.then(({ rows }) => {
-  if (rows.length === 0) {
-    return Promise.reject({
-      status: 404,
-      message: "This article does not exist",
-    });
-  } else {
-    return rows[0];
-  }
-})
-.then((article) => {
+
   const commentsFromDb = `
         SELECT * FROM comments
         WHERE article_id = $1
         ORDER BY created_at DESC;
     `;
   return db
-    .query(commentsFromDb, [article.article_id])
+    .query(commentsFromDb, [article_id])
     .then(({ rows }) => {
       if (rows.length === 0) {
-        return [
-          {
-            message: "There are no comments associated with this article"
-          },
-        ];
+        return [];
       } else {
         return rows;
       }
     });
-});
 }

@@ -37,12 +37,16 @@ exports.getArticles = (req, res, next) =>{
 
 exports.getCommentsByArtId = (req, res, next) =>{
     const {article_id} = req.params
-    if (isNaN(article_id)) return next({ status: 400, message: 'Not a number, please enter valid id'});
-    fetchArticleById(article_id).then(()=>{
-        fetchCommentsByArtId(article_id)
-        .then((comments)=>{
-        res.status(200).send({ comments })
-        })
+
+    fetchArticleById(article_id)
+    .then(()=>{
+    })
+    .catch((err)=>{
+        next(err);
+    });
+    fetchCommentsByArtId(article_id)
+    .then((comments)=>{
+    res.status(200).send({ comments })
     })
     .catch((err) =>{
         next(err)
