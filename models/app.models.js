@@ -7,7 +7,9 @@ exports.fetchTopics = () => {
 }
 
 exports.fetchArticleById = (article_id) =>{
-  
+
+  if (isNaN(article_id)) return Promise.reject({ status: 400, message: 'Not a number, please enter valid id'});
+
     return db.query(`
     SELECT * FROM articles
 
@@ -40,6 +42,67 @@ exports.fetchArticles = () =>{
     })
 }
 
+
+exports.insertComment = (article_id, newComment) =>{
+  
+    const { username, body, votes = 0 } = newComment
+
+    if (Object.keys(newComment).length < 2 ||
+    !newComment.username ||
+    !newComment.body ||
+    article_id < 1) {
+    return Promise.reject({status: 400, message: "Invalid data sent" });
+  }
+    
+   const userStr = `
+        SELECT * FROM users
+        WHERE username = $1;
+    `;
+  return db
+    .query(userStr, [username])
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, message: "This user does not exist",});
+      } else {
+        return rows[0];
+      }
+    })
+    .then((user) => {
+      const created_at = new Date();
+      const commentStr = `
+            INSERT INTO comments
+                (article_id, author, body, votes, created_at)
+            VALUES
+                ($1, $2, $3, $4, $5)
+            RETURNING *;
+        `;
+      return db
+        .query(commentStr, [
+          article_id,
+          user.username,
+          body,
+          votes,
+          created_at,
+        ])
+        .then(({ rows: [comment] }) => {
+          comment.created_at = Date.parse(comment.created_at);
+          return comment;
+        });
+    });
+}
+
+exports.updateArticleVotes = (article_id, inc_votes) => {
+  if (isNaN(inc_votes)) return Promise.reject({ status: 400, message: 'Voting must contain only numbers'});
+
+  return db.query(`
+  UPDATE articles
+  SET votes = votes +$1
+  WHERE article_id =$2
+  RETURNING *
+  `, [inc_votes, article_id]).then(({rows}) =>{
+    return rows[0]
+  })
+
 exports.fetchCommentsByArtId = (article_id)=>{
 
   const commentsFromDb = `
@@ -56,4 +119,5 @@ exports.fetchCommentsByArtId = (article_id)=>{
         return rows;
       }
     });
+
 }

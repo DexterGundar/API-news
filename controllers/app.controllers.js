@@ -1,4 +1,6 @@
-const { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArtId } = require("../models/app.models.js")
+
+const { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArtId, insertComment, updateArticleVotes } = require("../models/app.models.js")
+
 const endPoints = require("../endpoints.json");
 
 exports.getAllApis = (req, res) =>{
@@ -48,6 +50,42 @@ exports.getCommentsByArtId = (req, res, next) =>{
     res.status(200).send({ comments })
     })
     .catch((err) =>{
+        next(err)
+    })
+}
+
+exports.postComment = (req, res, next) =>{
+    const {article_id} = req.params
+    const newComment = req.body
+
+     
+    fetchArticleById(article_id).then(()=>{
+        insertComment(article_id, newComment).then((comment)=>{
+        res.status(201).send({ comment });
+        })
+        .catch((err)=>{
+        next(err)
+    })
+})    
+.catch((err)=>{
+    next(err)
+})
+}
+
+exports.patchArticleVotes = (req, res, next) => {
+    const {article_id} = req.params
+    const {inc_votes} = req.body
+
+    
+    fetchArticleById(article_id).then(()=>{
+    })
+    .catch((err) =>{
+        next(err)
+    })
+    updateArticleVotes(article_id, inc_votes).then((article) =>{
+        res.status(201).send({article})
+    })
+    .catch((err)=>{
         next(err)
     })
 }
