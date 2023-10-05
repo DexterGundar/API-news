@@ -39,23 +39,26 @@ exports.getArticleById = (req, res, next) => {
 exports.postComment = (req, res, next) =>{
     const {article_id} = req.params
     const newComment = req.body
-    // console.log(article_id, newComment)
-    // insertComment(article_id, newComment)
-    // .then((comment)=>{   
-    //     res.status(201).send({ comment })
-    // })
-    // .catch((err)=>{
-    //     next(err)
-    // })
-    return Promise.all([fetchArticleById(article_id).catch((error)=> error), insertComment(article_id, newComment).catch((error)=> error)])
-    .then((values)=>{
-            console.log(values)
-        
-        res.status(201).send({ comment })
-    })
-    .catch((err)=>{
+
+    if (Object.keys(newComment).length < 2 ||
+    !newComment.username ||
+    !newComment.body ||
+    article_id < 1) {
+    return res.status(400).send({ message: "Invalid data sent" });
+  }
+
+    if (isNaN(article_id)) return next({ status: 400, message: 'Not a number, please enter valid id'});
+    fetchArticleById(article_id).then(()=>{
+        insertComment(article_id, newComment).then((comment)=>{
+        res.status(201).send({ comment });
+        })
+        .catch((err)=>{
         next(err)
     })
+})    
+.catch((err)=>{
+    next(err)
+})
 }
 
 

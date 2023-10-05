@@ -199,7 +199,6 @@ describe('POST /api/articles/:article_id/comments',()=>{
       .send(newComment)
       .expect(404)
       .then(({body})=>{
-        // console.log(body, 'in test<<<<<')
         expect(body.message).toBe('Not Found')
       })
   });

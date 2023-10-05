@@ -40,13 +40,7 @@ exports.fetchArticles = () =>{
 }
 
 exports.insertComment = (article_id, newComment) =>{
-    if (Object.keys(newComment).length < 2 ||
-        !newComment.username ||
-        !newComment.body ||
-        article_id <= 0) {
-        return Promise.reject({ status: 400, message: "Invalid data sent" });
-      }
-    
+     
     const { username, body, votes = 0 } = newComment
    const userStr = `
         SELECT * FROM users
