@@ -6,15 +6,16 @@ exports.fetchTopics = () => {
     })
 }
 
-exports.fetchArticleById = (id) =>{
+exports.fetchArticleById = (article_id) =>{
+  
     return db.query(`
     SELECT * FROM articles
 
     WHERE article_id=$1;  
-    `,[id])
+    `,[article_id])
     .then(({ rows })=>{
         if (rows.length === 0){
-            return Promise.reject({ status: 404, message: 'Not Found'})
+          return Promise.reject({ status: 404, message: 'Not Found'})
         } else {
         return rows
         }
@@ -37,4 +38,22 @@ exports.fetchArticles = () =>{
     .then(({rows})=>{
         return rows
     })
+}
+
+exports.fetchCommentsByArtId = (article_id)=>{
+
+  const commentsFromDb = `
+        SELECT * FROM comments
+        WHERE article_id = $1
+        ORDER BY created_at DESC;
+    `;
+  return db
+    .query(commentsFromDb, [article_id])
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return [];
+      } else {
+        return rows;
+      }
+    });
 }

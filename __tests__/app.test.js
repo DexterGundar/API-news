@@ -6,7 +6,6 @@ const seed = require("../db/seeds/seed.js");
 const testData = require("../db/data/test-data");
 const endPoints = require("../endpoints.json");
 
-
 beforeEach(() => {
   return seed(testData);
 });
@@ -33,7 +32,7 @@ describe('Non existant end-points',()=>{
       .get("/api/topic")
       .expect(404)
       .then((response)=>{
-        expect(response.body.msg).toBe('Not Found')
+        expect(response.body.message).toBe('Not Found')
       })
   });
 })
@@ -68,13 +67,12 @@ describe("GET /api/articles/:article_id", () => {
         .get("/api/articles/55abc")
         .expect(400)          
         .then(({ body }) => {
-        expect(body.message).toBe('Not a number, please enter valid id')
+        expect(body.message).toBe('Bad Request')
         })
     });
 
 })
-
-describe('get /api',()=>{
+describe('get api',()=>{
   test("return 200 and api endpoints", () => {
     return request(app)
       .get("/api")
@@ -84,6 +82,7 @@ describe('get /api',()=>{
       })
   });
 })
+
 
 describe('get articles',()=>{
   test("return 200 and api articles with body property removed", () => {
@@ -115,4 +114,55 @@ describe('get articles',()=>{
       })
   });
 
+})
+
+describe('GET /api/articles/:article_id/comments',()=>{
+  test("return 200 and comments by article's id", () => {
+    return request(app)
+      .get("/api/articles/5/comments")
+      .expect(200)
+      .then(({body})=>{
+        expect(body.comments).toHaveLength(2);
+            body.comments.forEach((comment) => {
+              expect(comment).toHaveProperty("comment_id", expect.any(Number)),
+              expect(comment).toHaveProperty("body", expect.any(String)),
+              expect(comment).toHaveProperty("votes", expect.any(Number)),
+              expect(comment).toHaveProperty("author", expect.any(String)),
+              expect(comment).toHaveProperty("created_at", expect.any(String)),
+              expect(comment.article_id).toBe(5)
+            })
+      })
+  });
+  test('return 200 and array of objects which is by default sorted by "created_at" in a DESC order', () => {
+    return request(app)
+    .get("/api/articles/5/comments")
+    .expect(200)
+    .then(({ body }) => {
+      expect(body.comments).toBeSortedBy("created_at", { descending: true });
+    });
+  });
+  test("return 200 and message that there are no comments associated with this article", () => {
+    return request(app)
+    .get("/api/articles/4/comments")
+    .expect(200)          
+    .then(({ body }) => {
+      expect(body.comments).toEqual([])
+    })
+  })
+  test("return 400 and message of incorrectly entered ID", () => {
+    return request(app)
+        .get("/api/articles/55abc/comments")
+        .expect(400)          
+        .then(({ body }) => {
+        expect(body.message).toBe('Bad Request')
+        })
+  });
+  test("return 404 and message that an article does not exist if article ID is not in db", () => {
+    return request(app)
+        .get("/api/articles/5555/comments")
+        .expect(404)          
+        .then(({ body }) => {
+        expect(body.message).toBe('Not Found')
+        })
+  });
 })
