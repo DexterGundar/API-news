@@ -8,7 +8,7 @@ exports.fetchTopics = () => {
 
 exports.fetchArticleById = (article_id) =>{
 
-  if (isNaN(article_id)) return Promise.reject({ status: 400, message: 'Not a number, please enter valid id'});
+  if (isNaN(article_id)) return Promise.reject({ status: 400, message: "Bad Request"});
 
     return db.query(`
     SELECT * FROM articles
@@ -102,7 +102,7 @@ exports.updateArticleVotes = (article_id, inc_votes) => {
   `, [inc_votes, article_id]).then(({rows}) =>{
     return rows[0]
   })
-
+}
 exports.fetchCommentsByArtId = (article_id)=>{
 
   const commentsFromDb = `

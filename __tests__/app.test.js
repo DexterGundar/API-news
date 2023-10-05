@@ -168,7 +168,7 @@ describe('POST /api/articles/:article_id/comments',()=>{
         expect(body.message).toBe("This user does not exist")
       })
   });
-  test("return 400 and useful message if article ID is invalid", () => {
+  test("return 400 and message if article ID is invalid", () => {
     const newComment = {
       username: "icellusedkars",
       body: 'this is my sensible and nice comment'
@@ -178,7 +178,7 @@ describe('POST /api/articles/:article_id/comments',()=>{
       .send(newComment)
       .expect(400)
       .then(({body})=>{
-        expect(body.message).toBe('Not a number, please enter valid id')
+        expect(body.message).toBe("Bad Request")
       })
   });
   test("return 400 and invalid data send message if no username has been sent", () => {
@@ -290,7 +290,7 @@ test('return 400 and message if article ID is invalid', () => {
   .patch("/api/articles/55asdsa")
   .send(newVotes).expect(400)
   .then(({body}) => {
-      expect(body.message).toBe("Not a number, please enter valid id");
+      expect(body.message).toBe("Bad Request");
   })
   });
 
@@ -316,6 +316,7 @@ test('return 400 and message if article ID is invalid', () => {
           expect(body.message).toBe('Voting must contain only numbers');
       })
       });
+    })
 describe('GET /api/articles/:article_id/comments',()=>{
   test("return 200 and comments by article's id", () => {
     return request(app)
