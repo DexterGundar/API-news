@@ -410,6 +410,7 @@ describe('DELETE /api/comments/:comment_id',()=>{
   });
 })
 
+
 describe('GET /api/articles/:article_id (comment_count)',()=>{
   test("return 200 and article with comment_count 2", () => {
     return request(app)
@@ -445,3 +446,53 @@ describe('GET /api/articles/:article_id (comment_count)',()=>{
       })
   })
 })
+
+
+describe('GET /api/articles (topic query)',()=>{
+  test("return articles by topic query cats", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then(({body})=>{
+        expect(body.articles).toHaveLength(1);
+        expect(body.articles[0].article_id).toBe(5);
+        expect(body.articles[0].author).toBe("rogersop");
+        expect(body.articles[0].topic).toBe("cats");
+        expect(body.articles[0].title).toBe("UNCOVERED: catspiracy to bring down democracy");
+        expect(body.articles[0].article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700");
+      })
+  });
+  test("return articles by topic query mitch", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({body})=>{
+        expect(body.articles).toHaveLength(12);
+        body.articles.forEach((article) => {
+          expect(article).toHaveProperty("article_id", expect.any(Number));
+          expect(article).toHaveProperty("author", expect.any(String));
+          expect(article).toHaveProperty("title", expect.any(String));
+          expect(article).toHaveProperty("article_img_url", expect.any(String));
+          expect(article.topic).toBe("mitch");
+        });
+      });
+  })
+  test("return articles by topic query paper", () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toEqual([])
+      })
+  })
+  test("return 404 and error message if there is no such topic", () => {
+    return request(app)
+      .get("/api/articles?topic=rocknroll")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("Not Found")
+      })
+  })
+})
+
+
