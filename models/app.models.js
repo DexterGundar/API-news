@@ -46,7 +46,7 @@ const topicObj = {
       query += `WHERE topic = $1`
       values.push(topic)
     } else if (topic !== undefined && !(topic in topicObj)){
-      return Promise.reject({ status: 400, message: "invalid query" })
+      return Promise.reject({ status: 400, message: "Invalid Query" })
     }
     query += `
     GROUP BY articles.article_id

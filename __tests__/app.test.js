@@ -407,9 +407,36 @@ describe('GET /api/articles (topic query)',()=>{
         expect(body.articles[0].article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700");
       })
   });
+  test("return articles by topic query mitch", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({body})=>{
+        expect(body.articles).toHaveLength(12);
+        body.articles.forEach((article) => {
+          expect(article).toHaveProperty("article_id", expect.any(Number));
+          expect(article).toHaveProperty("author", expect.any(String));
+          expect(article).toHaveProperty("title", expect.any(String));
+          expect(article).toHaveProperty("article_img_url", expect.any(String));
+          expect(article.topic).toBe("mitch");
+        });
+      });
+  })
   test("return articles by topic query paper", () => {
     return request(app)
       .get("/api/articles?topic=paper")
       .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toEqual([])
+      })
   })
+  test("return 400 and error message if there is no such topic", () => {
+    return request(app)
+      .get("/api/articles?topic=rock")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Invalid Query")
+      })
+  })
+
 })
