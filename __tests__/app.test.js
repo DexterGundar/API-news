@@ -368,6 +368,24 @@ describe('GET /api/articles/:article_id/comments',()=>{
   });
 
 })
+
+
+describe("GET /api/users", () => {
+  test("respond with user properties to be 'username', 'name' and 'avatar_url' and types to be String", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)          
+        .then(({ body }) => {
+          expect(body.users).toHaveLength(4);
+          body.users.forEach((user) => {
+            expect(user).toHaveProperty("username", expect.any(String));
+            expect(user).toHaveProperty("name", expect.any(String));
+            expect(user).toHaveProperty("avatar_url", expect.any(String));
+          });
+        });
+    });
+})
+
 describe('DELETE /api/comments/:comment_id',()=>{
   test("Delete comment by comment ID", () => {
     return request(app)
@@ -392,3 +410,4 @@ describe('DELETE /api/comments/:comment_id',()=>{
   });
 
 })
+
