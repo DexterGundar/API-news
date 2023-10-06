@@ -30,9 +30,7 @@ app.use((err, req, res, next)=>{
     next(err)
   }
 })
-app.all("/*",(req,res)=>{
-  res.status(404).send({message: 'Not Found'})
-})
+
 
 app.use((err, req, res, next) => {
 
@@ -45,6 +43,10 @@ app.use((err, req, res, next) => {
         res.status(500).send({message: "Internal Server Error"})
     }
 
+  })
+
+  app.all("/*",(req,res)=>{
+    res.status(404).send({message: 'Not Found'})
   })
 
 module.exports = app;
