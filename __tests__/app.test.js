@@ -44,14 +44,14 @@ describe("GET /api/articles/:article_id", () => {
         .get("/api/articles/5")
         .expect(200)          
         .then(({ body }) => {
-          expect(body.article[0].author).toBe("rogersop"),
-          expect(body.article[0].title).toBe("UNCOVERED: catspiracy to bring down democracy"),
-          expect(body.article[0].article_id).toBe(5),
-            expect(body.article[0].body).toBe("Bastet walks amongst us, and the cats are taking arms!"),
-            expect(body.article[0].topic).toBe("cats"),
-            expect(body.article[0].created_at).toBe('2020-08-03T13:14:00.000Z'),
-            expect(body.article[0].votes).toBe(0),
-            expect(body.article[0].article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700");
+          expect(body.article.author).toBe("rogersop"),
+          expect(body.article.title).toBe("UNCOVERED: catspiracy to bring down democracy"),
+          expect(body.article.article_id).toBe(5),
+          expect(body.article.body).toBe("Bastet walks amongst us, and the cats are taking arms!"),
+          expect(body.article.topic).toBe("cats"),
+          expect(body.article.created_at).toBe('2020-08-03T13:14:00.000Z'),
+          expect(body.article.votes).toBe(0),
+          expect(body.article.article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700");
         });
     });
     test("respond with 404 and a helpful message if there is no such id", () => {
@@ -408,7 +408,43 @@ describe('DELETE /api/comments/:comment_id',()=>{
         expect(body.message).toBe('Bad Request')
       })
   });
+})
 
+
+describe('GET /api/articles/:article_id (comment_count)',()=>{
+  test("return 200 and article with comment_count 2", () => {
+    return request(app)
+      .get("/api/articles/9")
+      .expect(200)
+      .then(({body})=>{
+      expect(body.article.comment_count).toBe("2");
+      expect(body.article).toHaveProperty("comment_count", expect.any(String));
+      expect(body.article).toHaveProperty("article_id", expect.any(Number));
+      expect(body.article).toHaveProperty("author", expect.any(String));
+      expect(body.article).toHaveProperty("title", expect.any(String));
+      expect(body.article).toHaveProperty("body", expect.any(String));
+      expect(body.article).toHaveProperty("topic", expect.any(String));
+      expect(body.article).toHaveProperty("created_at", expect.any(String));
+      expect(body.article).toHaveProperty("votes", expect.any(Number));
+      expect(body.article).toHaveProperty("article_img_url", expect.any(String));
+      })
+  })
+  test("return 200 and article with comment_count 0", () => {
+    return request(app)
+      .get("/api/articles/2")
+      .expect(200)
+      .then(({body})=>{
+      expect(body.article.comment_count).toBe("0");
+      expect(body.article.article_id).toBe(2);
+      expect(body.article.author).toBe("icellusedkars");
+      expect(body.article.title).toBe("Sony Vaio; or, The Laptop");
+      expect(body.article.body).toBe("Call me Mitchell. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would buy a laptop about a little and see the codey part of the world. It is a way I have of driving off the spleen and regulating the circulation. Whenever I find myself growing grim about the mouth; whenever it is a damp, drizzly November in my soul; whenever I find myself involuntarily pausing before coffin warehouses, and bringing up the rear of every funeral I meet; and especially whenever my hypos get such an upper hand of me, that it requires a strong moral principle to prevent me from deliberately stepping into the street, and methodically knocking people’s hats off—then, I account it high time to get to coding as soon as I can. This is my substitute for pistol and ball. With a philosophical flourish Cato throws himself upon his sword; I quietly take to the laptop. There is nothing surprising in this. If they but knew it, almost all men in their degree, some time or other, cherish very nearly the same feelings towards the the Vaio with me.");
+      expect(body.article.topic).toBe("mitch");
+      expect(body.article.created_at).toBe("2020-10-16T05:03:00.000Z");
+      expect(body.article.votes).toBe(0);
+      expect(body.article.article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700")
+      })
+  })
 })
 
 
@@ -458,4 +494,5 @@ describe('GET /api/articles (topic query)',()=>{
       })
   })
 })
+
 
