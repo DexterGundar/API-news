@@ -408,6 +408,25 @@ describe('DELETE /api/comments/:comment_id',()=>{
         expect(body.message).toBe('Bad Request')
       })
   });
-
 })
 
+describe('GET /api/articles/:article_id (comment_count)',()=>{
+  test("return 200 and article with comment_count", () => {
+    return request(app)
+      .get("/api/articles/9")
+      .expect(200)
+      .then(({body})=>{
+      expect(body.article[0].comment_count).toBe("2");
+            // body.articles.forEach((article) => {
+            //   expect(article).toHaveProperty("author", expect.any(String)),
+            //   expect(article).toHaveProperty("title", expect.any(String)),
+            //   expect(article).toHaveProperty("article_id", expect.any(Number)),
+            //   expect(article).toHaveProperty("topic", expect.any(String)),
+            //   expect(article).toHaveProperty("created_at", expect.any(String)),
+            //   expect(article).toHaveProperty("votes", expect.any(Number)),
+            //   expect(article).toHaveProperty("article_img_url", expect.any(String)),
+            //   expect(article).toHaveProperty("comment_count", expect.any(String))
+            // })
+      })
+  })
+})
