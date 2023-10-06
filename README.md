@@ -45,5 +45,8 @@ Here are all the dependancies (just in case):
     "supertest": "^6.3.3"
   },
 
+Minimum requirements:
+postgres (PostgreSQL) 14.9
+node v20.8.0
 
 Thank you.
