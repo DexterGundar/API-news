@@ -457,6 +457,5 @@ describe('GET /api/articles (topic query)',()=>{
         expect(body.message).toBe("Not Found")
       })
   })
-
 })
 
