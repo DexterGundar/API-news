@@ -139,6 +139,16 @@ exports.fetchCommentsByArtId = (article_id)=>{
 
 }
 
+
+exports.fetchUsers = ()=>{
+  return db
+  .query(`
+  SELECT * FROM users  
+  `).then(({rows}) =>{
+    return rows
+      })
+}
+
 exports.deleteComment = (comment_id) =>{
   
   return db.query(`
@@ -149,5 +159,5 @@ exports.deleteComment = (comment_id) =>{
     if (rows.length === 0) {
       return Promise.reject({ status: 404, message: 'Not Found'})
     }
-  })
+      })
 }
