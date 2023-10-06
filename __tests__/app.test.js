@@ -430,12 +430,12 @@ describe('GET /api/articles (topic query)',()=>{
         expect(body.articles).toEqual([])
       })
   })
-  test("return 400 and error message if there is no such topic", () => {
+  test("return 404 and error message if there is no such topic", () => {
     return request(app)
-      .get("/api/articles?topic=rock")
-      .expect(400)
+      .get("/api/articles?topic=rocknroll")
+      .expect(404)
       .then(({ body }) => {
-        expect(body.message).toBe("Invalid Query")
+        expect(body.message).toBe("Not Found")
       })
   })
 
