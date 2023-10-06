@@ -44,8 +44,9 @@ app.use((err, req, res, next) => {
     }
 
   })
+
   app.all("/*",(req,res)=>{
     res.status(404).send({message: 'Not Found'})
   })
-  
+
 module.exports = app;
