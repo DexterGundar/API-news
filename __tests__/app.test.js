@@ -447,7 +447,6 @@ describe('GET /api/articles/:article_id (comment_count)',()=>{
   })
 })
 
-
 describe('GET /api/articles (topic query)',()=>{
   test("return articles by topic query cats", () => {
     return request(app)
