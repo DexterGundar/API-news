@@ -26,9 +26,7 @@ and
 "jest": {
     "setupFilesAfterEnv": [
       "jest-extended/all",
-      "jest-sorted"
-
-    ]
+      "jest-sorted"    ]
   }
 
 Here are all the dependancies (just in case):
